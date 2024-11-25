@@ -48,11 +48,25 @@ func (f *blugRepo) UploadArticleInData(title, desc, category, tags, url string, 
 		if err != nil {
 			f.log.Error(err)
 		} else {
-			f.data.ArticleCache.RPush(ctx, pkg.ArticleListKey, aStr)
+			f.data.ArticleCache.LPush(ctx, pkg.ArticleListKey, aStr)
 			f.data.ArticleCache.HSet(ctx, pkg.ArticleMapKey, title, aStr)
 			log.Println("article str", aStr, " to cache succeed")
 		}
 	}
+
+	err = f.data.ArticleCache.Del(ctx, pkg.ArticleListKey).Err()
+	if err != nil {
+		f.log.Error(err)
+	} else {
+		f.log.Info("delete list key succeed")
+	}
+	err = f.data.ArticleCache.Del(ctx, pkg.ArticleMapKey).Err()
+	if err != nil {
+		f.log.Error(err)
+	} else {
+		f.log.Info("delete list key succeed")
+	}
+
 	return nil
 }
 
@@ -66,15 +80,14 @@ func (f *blugRepo) GetArticleListInData(ctx context.Context, offset int) (*v1.Ge
 		err = pkg.JsonStrSliceToAny(result, &articles)
 		if err != nil {
 			f.log.Error(err)
+			f.log.Info("this req will get article list from db")
 		} else if len(articles) != 0 {
 			f.log.Info("get article list shoot cache succeed!")
 			return articleObjToV1ArticleListResp(articles), nil
-		} else {
-			f.log.Info("this req will get article list from db")
 		}
 	}
 
-	articles, err := f.data.DB.Article.Query().Where(article.IsShowEQ(true)).All(ctx)
+	articles, err := f.data.DB.Article.Query().Where(article.IsShowEQ(true)).Order(ent.Asc(article.FieldCreateTime)).All(ctx)
 	if err != nil {
 		f.log.Error(err)
 		return &v1.GetArticleListResp{}, pkg.InternalErr
@@ -88,6 +101,20 @@ func (f *blugRepo) GetArticleListInData(ctx context.Context, offset int) (*v1.Ge
 			Category:   aObj.Category,
 			CreateTime: aObj.CreateTime,
 		})
+		a := &articleObj{
+			Title:       aObj.Title,
+			Desc:        aObj.Desc,
+			Tags:        aObj.Tags,
+			Category:    aObj.Category,
+			CreatedTime: pkg.NowTimeStr(),
+		}
+		aStr, err := pkg.AnyToJsonStr(a)
+		if err != nil {
+			f.log.Error(err)
+		} else {
+			f.data.ArticleCache.LPush(ctx, pkg.ArticleListKey, aStr)
+			log.Println("article str", aStr, " to cache succeed")
+		}
 	}
 	return &v1.GetArticleListResp{
 		Articles: resp,
@@ -167,6 +194,23 @@ func (f *blugRepo) GetArticleInData(ctx context.Context, title string) (*v1.GetA
 		f.log.Error(err)
 		return &v1.GetArticleByTitleResp{}, pkg.InternalErr
 	}
+
+	aObj2 := &articleObj{
+		Title:       aObj.Title,
+		Content:     content,
+		Desc:        aObj.Desc,
+		Tags:        aObj.Tags,
+		Category:    aObj.Category,
+		CreatedTime: pkg.NowTimeStr(),
+	}
+	aStr, err := pkg.AnyToJsonStr(aObj2)
+	if err != nil {
+		f.log.Error(err)
+	} else {
+		f.data.ArticleCache.HSet(ctx, pkg.ArticleMapKey, title, aStr)
+		log.Println("article str", aStr, " to cache succeed")
+	}
+
 	return &v1.GetArticleByTitleResp{
 		Article: &v1.Article{
 			Title:      aObj.Title,
