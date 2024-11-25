@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>{{.title}}</title>
+  <style>
+    body {
+      font-family: 'Arial', sans-serif;
+      margin: 0;
+      padding: 20px;
+      background-color: #f4f4f4;
+      position: relative;
+    }
+    .avatar-container {
+      position: absolute;
+      top: 70px;
+      left: calc((100vw - 800px) / 2 / 2);
+      transform: translateX(-50%);
+      text-align: center;
+    }
+    .avatar {
+      width: 90px;
+      height: 90px;
+      border-radius: 50%;
+      box-shadow: 0 0 5px rgba(0, 0, 0, 0.2);
+      display: block;
+      margin: 0 auto;
+    }
+    .container {
+      max-width: 800px;
+      margin: 50px auto 0;
+      background: #fff;
+      padding: 30px;
+      border-radius: 7px;
+      box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+      position: relative;
+    }
+    .article-list {
+      margin: 0;
+      width: 100%;
+    }
+    .article {
+      margin-bottom: 20px;
+      padding-bottom: 20px;
+      border-bottom: 1px solid #ddd;
+    }
+    .article:last-child {
+      border-bottom: none;
+    }
+    .article h2 {
+      margin: 0 0 10px;
+      font-size: 24px;
+    }
+    .article p {
+      margin: 0 0 10px;
+      color: #555;
+      line-height: 1.5;
+    }
+    .article .meta {
+      font-size: 14px;
+      color: #888;
+    }
+    .article a {
+      text-decoration: none;
+      color: #333;
+      transition: color 0.3s ease;
+    }
+    .article a:hover {
+      color: #007bff;
+    }
+    .article a h2 {
+      margin: 0;
+    }
+    .pagination {
+      text-align: center;
+      margin-top: 20px;
+    }
+    .pagination button {
+      background-color: #007bff;
+      color: white;
+      border: none;
+      border-radius: 5px;
+      padding: 5px 10px;
+      margin: 0 2px;
+      cursor: pointer;
+      transition: background-color 0.3s ease;
+    }
+    .pagination button:hover {
+      background-color: #0056b3;
+    }
+    .pagination button.active {
+      background-color: #0056b3;
+    }
+  </style>
+</head>
+<body>
+<div class="avatar-container">
+  <img src="{{.avatar}}" alt="Avatar" class="avatar">
+  <div><pre>Taosu`Home</pre></div>
+</div>
+<div class="container">
+  <div class="article-list">
+    {{range .infos}}
+    <div class="article">
+      <a href="/static/articles/{{.Title}}">
+        <h2>{{.Title}}</h2>
+        <p>{{.Desc}}</p>
+        <div class="meta">
+          <span>Category: {{.Category}}</span> |
+          <span>Tags: {{.Tags}}</span> |
+          <span>Created: {{.CreateTime}}</span>
+        </div>
+      </a>
+    </div>
+    {{end}}
+  </div>
+  <!-- Pagination Controls -->
+  <div id="pagination" class="pagination"></div>
+</div>
+<script>
+  document.addEventListener('DOMContentLoaded', function() {
+    const articles = document.querySelectorAll('.article');
+    const articlesPerPage = 5;
+    const totalArticles = articles.length;
+    const totalPages = Math.ceil(totalArticles / articlesPerPage);
+    const paginationDiv = document.getElementById('pagination');
+
+    let currentPage = 1;
+
+    function createPagination() {
+      paginationDiv.innerHTML = '';
+      for (let i = 1; i <= totalPages; i++) {
+        const button = document.createElement('button');
+        button.textContent = i;
+        button.classList.add('pagination-btn');
+        if (i === currentPage) {
+          button.classList.add('active');
+        }
+        button.addEventListener('click', function() {
+          changePage(i);
+        });
+        paginationDiv.appendChild(button);
+      }
+    }
+
+    function changePage(page) {
+      currentPage = page;
+      const start = (page - 1) * articlesPerPage;
+      const end = start + articlesPerPage;
+
+      articles.forEach((article, index) => {
+        if (index >= start && index < end) {
+          article.style.display = 'block';
+        } else {
+          article.style.display = 'none';
+        }
+      });
+
+      document.querySelectorAll('.pagination-btn').forEach(button => {
+        button.classList.remove('active');
+      });
+      document.querySelectorAll('.pagination-btn')[page - 1].classList.add('active');
+    }
+
+    if (totalPages > 1) {
+      createPagination();
+      changePage(1);
+    }
+  });
+</script>
+</body>
+</html>

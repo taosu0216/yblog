@@ -1,0 +1,127 @@
+syntax = "proto3";
+
+package blug.v1;
+
+import "google/api/annotations.proto";
+
+option go_package = "blug/api/blug/v1;v1";
+
+message CreateNewFriendLinkReq{
+  string title = 1;
+  string link = 2;
+  string desc = 3;
+  string avatar = 4;
+}
+message CreateNewFriendLinkResp{
+  string message = 1;
+  Result check = 2;
+}
+message Result{
+  string status = 1;
+  string msg = 2;
+}
+
+message RegisterUserReq{
+  string username = 1;
+  string password = 2;
+}
+
+message RegisterUserResp{
+  string message = 1;
+}
+
+message UserLoginReq{
+  string username = 1;
+  string password = 2;
+}
+message UserLoginResp{
+  string message = 1;
+  string token = 2;
+}
+
+message UserListReq{}
+message UserListResp{
+  repeated string username = 1;
+}
+
+message GetFriendLinkListReq{}
+message GetFriendLinkListResp{
+  repeated Link links = 1;
+}
+
+message Link {
+  string title = 1;
+  string link = 2;
+  string desc = 3;
+  string avatar = 4;
+}
+
+message GetArticleListReq{
+  int64 offset = 1;
+}
+message GetArticleListResp{
+  repeated Article articles = 1;
+}
+message Article {
+  string title = 1;
+  string content = 2;
+  string tags = 3;
+  string category = 4;
+  string create_time = 5;
+  string desc = 6;
+}
+
+message GetArticleByTitleReq{
+  string title = 1;
+}
+message GetArticleByTitleResp{
+  Article article = 1;
+}
+
+service Blug {
+  // Friend service
+  rpc CreateNewFriendLink(CreateNewFriendLinkReq) returns (CreateNewFriendLinkResp) {
+    option (google.api.http) = {
+      post: "/api/friends/add"
+      body: "*"
+    };
+  }
+  rpc GetFriendLinkList(GetFriendLinkListReq) returns (GetFriendLinkListResp) {
+    option (google.api.http) = {
+      get: "/api/friends/list"
+    };
+  }
+
+  // User service
+  rpc RegisterUser(RegisterUserReq) returns (RegisterUserResp) {
+    option (google.api.http) = {
+      post: "/api/user/register"
+      body: "*"
+    };
+  }
+  rpc UserLogin(UserLoginReq) returns (UserLoginResp) {
+    option (google.api.http) = {
+      post: "/api/user/login"
+      body: "*"
+    };
+  }
+  rpc UserList(UserListReq) returns (UserListResp) {
+    option (google.api.http) = {
+      post: "/api/user/lists"
+      body: "*"
+    };
+  }
+
+  // Article service
+  rpc GetArticleList(GetArticleListReq) returns (GetArticleListResp) {
+    option (google.api.http) = {
+      get: "/api/article/list"
+    };
+  }
+  rpc GetArticleByTitle(GetArticleByTitleReq) returns (GetArticleByTitleResp) {
+    option (google.api.http) = {
+      get: "/api/article/get"
+    };
+  }
+}
+
