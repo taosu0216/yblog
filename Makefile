@@ -72,6 +72,10 @@ all:
 db:
 	docker run -itd --restart always --name pg -e TZ=Asia/Shanghai -e POSTGRES_PASSWORD=pass -e POSTGRES_DB=blug -p 5432:5432 postgres:15 && go run cmd/ent/migration.go
 
+.PHONY: redis
+redis:
+	docker run -itd --restart always --name redis -p 6379:6379 redis:7.2.0-alpine
+
 .PHONY: rmdb
 rmdb:
 	docker stop pg && docker rm pg
@@ -80,6 +84,10 @@ rmdb:
 # generate all
 ent:
 	cd internal/data/ent && ent generate --target ./ ./schema
+
+.PHONY: migration
+migration:
+	cd cmd/ent && go run migration.go
 
 # show help
 help:
