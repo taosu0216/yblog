@@ -1,0 +1,40 @@
+server:
+  http:
+    addr: 0.0.0.0:8000
+    timeout: 50s
+  grpc:
+    addr: 0.0.0.0:9000
+    timeout: 50s
+data:
+  database:
+    driver: postgres
+    source: postgresql://*********:*********************@******:******/******
+  article:
+    addr: ******
+    user: "default"
+    password: "******"
+    read_timeout: 2s
+    write_timeout: 2s
+    db: 0
+  friend:
+    addr: ******
+    user: "default"
+    password: "******"
+    read_timeout: 2s
+    write_timeout: 2s
+    db: 1
+  user:
+    addr: ******
+    user: "default"
+    password: "******"
+    read_timeout: 2s
+    write_timeout: 2s
+    db: 2
+aiservice:
+  baseurl: "******"
+  apikey: "******"
+  model: "******"
+trace:
+  endpoint: "http://192.168.2.60:14268/api/traces"
+auth:
+  jwtkey: "******"
