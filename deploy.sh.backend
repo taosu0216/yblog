@@ -9,6 +9,8 @@ docker save -o ./dockertar.tar blug:dev-1.0
 # 将tar文件上传到远程服务器
 sshpass -p "**********" scp ./dockertar.tar **********@**********:/root/blug
 
+rm ./dockertar.tar
+
 # 使用SSH连接到远程服务器并执行以下操作
 sshpass -p "**********" ssh **********@********** << EOF
 
