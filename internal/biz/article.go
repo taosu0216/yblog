@@ -21,7 +21,9 @@ func (uc *BlugUsecase) UploadArticle(url, fileContent string, ctx transporthttp.
 }
 
 func (uc *BlugUsecase) GetArticleList(ctx context.Context, offset int) (*v1.GetArticleListResp, error) {
-	return uc.repo.GetArticleListInData(ctx, offset)
+	uc.Log.Info("get article list in biz")
+	resp, err := uc.repo.GetArticleListInData(ctx, offset)
+	return resp, err
 }
 
 func (uc *BlugUsecase) GetArticle(ctx context.Context, title string) (*v1.GetArticleByTitleResp, error) {

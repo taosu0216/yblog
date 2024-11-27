@@ -71,24 +71,25 @@ func (f *blugRepo) UploadArticleInData(title, desc, category, tags, url string, 
 }
 
 func (f *blugRepo) GetArticleListInData(ctx context.Context, offset int) (*v1.GetArticleListResp, error) {
-
+	f.log.Info("get article list in data")
 	result, err := f.data.ArticleCache.LRange(ctx, pkg.ArticleListKey, 0, -1).Result()
 	if err != nil {
 		f.log.Error(err)
 	} else {
-		articles := make([]articleObj, 0)
-		err = pkg.JsonStrSliceToAny(result, &articles)
-		if err != nil {
-			f.log.Error(err)
-			f.log.Info("this req will get article list from db")
-		} else if len(articles) != 0 {
-			f.log.Info("get article list shoot cache succeed!")
-			return articleObjToV1ArticleListResp(articles), nil
+		if len(result) > 0 {
+			articles := make([]articleObj, 0)
+			err = pkg.JsonStrSliceToAny(result, &articles)
+			if err != nil {
+				f.log.Error(err)
+				f.log.Info("this req will get article list from db")
+			} else if len(articles) != 0 {
+				f.log.Info("get article list shoot cache succeed!")
+				return articleObjToV1ArticleListResp(articles), nil
+			}
 		}
 	}
 
-	articles, err := f.data.DB.Article.Query().Where(article.IsShowEQ(true)).Where(article.ContentContains("vps")).Order(ent.Asc(article.FieldCreateTime)).All(ctx)
-	//articles, err := f.data.DB.Article.Query().Where(article.IsShowEQ(true)).Order(ent.Asc(article.FieldCreateTime)).All(ctx)
+	articles, err := f.data.DB.Article.Query().Where(article.IsShowEQ(true)).Order(ent.Asc(article.FieldCreateTime)).All(ctx)
 	if err != nil {
 		f.log.Error(err)
 		return &v1.GetArticleListResp{}, pkg.InternalErr

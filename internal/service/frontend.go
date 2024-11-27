@@ -12,6 +12,7 @@ import (
 )
 
 func (s *BlugService) GetIndex(ctx transporthttp.Context) error {
+	s.uc.Log.Info("start get index in service")
 	listsResp, _ := s.GetArticleList(ctx, &v1.GetArticleListReq{})
 
 	// 解析模板文件

@@ -78,4 +78,4 @@ func getMachineInfoProducer() {
 	}
 }
 
-func CancelJob()
+//func CancelJob()
