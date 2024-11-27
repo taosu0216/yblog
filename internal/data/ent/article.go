@@ -30,7 +30,9 @@ type Article struct {
 	// CreateTime holds the value of the "create_time" field.
 	CreateTime string `json:"create_time,omitempty"`
 	// IsShow holds the value of the "is_show" field.
-	IsShow       bool `json:"is_show,omitempty"`
+	IsShow bool `json:"is_show,omitempty"`
+	// Content holds the value of the "content" field.
+	Content      string `json:"content,omitempty"`
 	selectValues sql.SelectValues
 }
 
@@ -41,7 +43,7 @@ func (*Article) scanValues(columns []string) ([]any, error) {
 		switch columns[i] {
 		case article.FieldIsShow:
 			values[i] = new(sql.NullBool)
-		case article.FieldTitle, article.FieldDesc, article.FieldCategory, article.FieldTags, article.FieldURL, article.FieldCreateTime:
+		case article.FieldTitle, article.FieldDesc, article.FieldCategory, article.FieldTags, article.FieldURL, article.FieldCreateTime, article.FieldContent:
 			values[i] = new(sql.NullString)
 		case article.FieldID:
 			values[i] = new(uuid.UUID)
@@ -108,6 +110,12 @@ func (a *Article) assignValues(columns []string, values []any) error {
 			} else if value.Valid {
 				a.IsShow = value.Bool
 			}
+		case article.FieldContent:
+			if value, ok := values[i].(*sql.NullString); !ok {
+				return fmt.Errorf("unexpected type %T for field content", values[i])
+			} else if value.Valid {
+				a.Content = value.String
+			}
 		default:
 			a.selectValues.Set(columns[i], values[i])
 		}
@@ -164,6 +172,9 @@ func (a *Article) String() string {
 	builder.WriteString(", ")
 	builder.WriteString("is_show=")
 	builder.WriteString(fmt.Sprintf("%v", a.IsShow))
+	builder.WriteString(", ")
+	builder.WriteString("content=")
+	builder.WriteString(a.Content)
 	builder.WriteByte(')')
 	return builder.String()
 }

@@ -89,6 +89,11 @@ func IsShow(v bool) predicate.Article {
 	return predicate.Article(sql.FieldEQ(FieldIsShow, v))
 }
 
+// Content applies equality check predicate on the "content" field. It's identical to ContentEQ.
+func Content(v string) predicate.Article {
+	return predicate.Article(sql.FieldEQ(FieldContent, v))
+}
+
 // TitleEQ applies the EQ predicate on the "title" field.
 func TitleEQ(v string) predicate.Article {
 	return predicate.Article(sql.FieldEQ(FieldTitle, v))
@@ -487,6 +492,71 @@ func IsShowEQ(v bool) predicate.Article {
 // IsShowNEQ applies the NEQ predicate on the "is_show" field.
 func IsShowNEQ(v bool) predicate.Article {
 	return predicate.Article(sql.FieldNEQ(FieldIsShow, v))
+}
+
+// ContentEQ applies the EQ predicate on the "content" field.
+func ContentEQ(v string) predicate.Article {
+	return predicate.Article(sql.FieldEQ(FieldContent, v))
+}
+
+// ContentNEQ applies the NEQ predicate on the "content" field.
+func ContentNEQ(v string) predicate.Article {
+	return predicate.Article(sql.FieldNEQ(FieldContent, v))
+}
+
+// ContentIn applies the In predicate on the "content" field.
+func ContentIn(vs ...string) predicate.Article {
+	return predicate.Article(sql.FieldIn(FieldContent, vs...))
+}
+
+// ContentNotIn applies the NotIn predicate on the "content" field.
+func ContentNotIn(vs ...string) predicate.Article {
+	return predicate.Article(sql.FieldNotIn(FieldContent, vs...))
+}
+
+// ContentGT applies the GT predicate on the "content" field.
+func ContentGT(v string) predicate.Article {
+	return predicate.Article(sql.FieldGT(FieldContent, v))
+}
+
+// ContentGTE applies the GTE predicate on the "content" field.
+func ContentGTE(v string) predicate.Article {
+	return predicate.Article(sql.FieldGTE(FieldContent, v))
+}
+
+// ContentLT applies the LT predicate on the "content" field.
+func ContentLT(v string) predicate.Article {
+	return predicate.Article(sql.FieldLT(FieldContent, v))
+}
+
+// ContentLTE applies the LTE predicate on the "content" field.
+func ContentLTE(v string) predicate.Article {
+	return predicate.Article(sql.FieldLTE(FieldContent, v))
+}
+
+// ContentContains applies the Contains predicate on the "content" field.
+func ContentContains(v string) predicate.Article {
+	return predicate.Article(sql.FieldContains(FieldContent, v))
+}
+
+// ContentHasPrefix applies the HasPrefix predicate on the "content" field.
+func ContentHasPrefix(v string) predicate.Article {
+	return predicate.Article(sql.FieldHasPrefix(FieldContent, v))
+}
+
+// ContentHasSuffix applies the HasSuffix predicate on the "content" field.
+func ContentHasSuffix(v string) predicate.Article {
+	return predicate.Article(sql.FieldHasSuffix(FieldContent, v))
+}
+
+// ContentEqualFold applies the EqualFold predicate on the "content" field.
+func ContentEqualFold(v string) predicate.Article {
+	return predicate.Article(sql.FieldEqualFold(FieldContent, v))
+}
+
+// ContentContainsFold applies the ContainsFold predicate on the "content" field.
+func ContentContainsFold(v string) predicate.Article {
+	return predicate.Article(sql.FieldContainsFold(FieldContent, v))
 }
 
 // And groups predicates with the AND operator between them.

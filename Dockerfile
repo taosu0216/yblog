@@ -17,6 +17,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
 COPY --from=builder /src/bin /app
 COPY --from=builder /src/_posts /src/_posts
 COPY --from=builder /src/dist /src/dist
+COPY --from=builder /src/blacklist /src/blacklist
 
 WORKDIR /app
 

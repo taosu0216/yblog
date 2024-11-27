@@ -111,6 +111,20 @@ func (au *ArticleUpdate) SetNillableIsShow(b *bool) *ArticleUpdate {
 	return au
 }
 
+// SetContent sets the "content" field.
+func (au *ArticleUpdate) SetContent(s string) *ArticleUpdate {
+	au.mutation.SetContent(s)
+	return au
+}
+
+// SetNillableContent sets the "content" field if the given value is not nil.
+func (au *ArticleUpdate) SetNillableContent(s *string) *ArticleUpdate {
+	if s != nil {
+		au.SetContent(*s)
+	}
+	return au
+}
+
 // Mutation returns the ArticleMutation object of the builder.
 func (au *ArticleUpdate) Mutation() *ArticleMutation {
 	return au.mutation
@@ -169,6 +183,9 @@ func (au *ArticleUpdate) sqlSave(ctx context.Context) (n int, err error) {
 	}
 	if value, ok := au.mutation.IsShow(); ok {
 		_spec.SetField(article.FieldIsShow, field.TypeBool, value)
+	}
+	if value, ok := au.mutation.Content(); ok {
+		_spec.SetField(article.FieldContent, field.TypeString, value)
 	}
 	if n, err = sqlgraph.UpdateNodes(ctx, au.driver, _spec); err != nil {
 		if _, ok := err.(*sqlgraph.NotFoundError); ok {
@@ -274,6 +291,20 @@ func (auo *ArticleUpdateOne) SetNillableIsShow(b *bool) *ArticleUpdateOne {
 	return auo
 }
 
+// SetContent sets the "content" field.
+func (auo *ArticleUpdateOne) SetContent(s string) *ArticleUpdateOne {
+	auo.mutation.SetContent(s)
+	return auo
+}
+
+// SetNillableContent sets the "content" field if the given value is not nil.
+func (auo *ArticleUpdateOne) SetNillableContent(s *string) *ArticleUpdateOne {
+	if s != nil {
+		auo.SetContent(*s)
+	}
+	return auo
+}
+
 // Mutation returns the ArticleMutation object of the builder.
 func (auo *ArticleUpdateOne) Mutation() *ArticleMutation {
 	return auo.mutation
@@ -362,6 +393,9 @@ func (auo *ArticleUpdateOne) sqlSave(ctx context.Context) (_node *Article, err e
 	}
 	if value, ok := auo.mutation.IsShow(); ok {
 		_spec.SetField(article.FieldIsShow, field.TypeBool, value)
+	}
+	if value, ok := auo.mutation.Content(); ok {
+		_spec.SetField(article.FieldContent, field.TypeString, value)
 	}
 	_node = &Article{config: auo.config}
 	_spec.Assign = _node.assignValues

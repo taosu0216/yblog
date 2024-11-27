@@ -23,10 +23,10 @@ func (s *BlugService) GetIndex(ctx transporthttp.Context) error {
 
 	// 渲染模板并写入 HTTP 响应
 	err = tmpl.Execute(ctx.Response(), map[string]interface{}{
-		"title":   "index",
-		"infos":   listsResp.Articles,
-		"avatar":  "https://s3.bmp.ovh/imgs/2024/11/22/6c668980b1e2aa2f.jpg",
-		"pageNum": len(listsResp.Articles) / 5,
+		"title":  "index",
+		"infos":  listsResp.Articles,
+		"avatar": "https://s3.bmp.ovh/imgs/2024/11/22/6c668980b1e2aa2f.jpg",
+		//	"pageNum": len(listsResp.Articles) / 7,
 	})
 	if err != nil {
 		http.Error(ctx.Response(), err.Error(), http.StatusInternalServerError)

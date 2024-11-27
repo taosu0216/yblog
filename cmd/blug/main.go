@@ -1,8 +1,10 @@
 package main
 
 import (
+	"blug/daemonSet"
 	"blug/internal/conf"
 	"blug/internal/pkg/aiService"
+	"blug/internal/pkg/async"
 	"blug/internal/pkg/auth"
 	"blug/internal/pkg/markdown"
 	"flag"
@@ -87,8 +89,11 @@ func main() {
 	}
 	defer cleanup()
 
+	async.InitAsynq(bc.Data, logger)
+	daemonSet.InitDaemonSet()
+
 	// start and wait for stop signal
-	if err := app.Run(); err != nil {
+	if err = app.Run(); err != nil {
 		panic(err)
 	}
 }

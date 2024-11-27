@@ -22,6 +22,7 @@ func (Article) Fields() []ent.Field {
 		field.String("url"),
 		field.String("create_time").Default(pkg.NowTimeStr()).Immutable(),
 		field.Bool("is_show").Default(true),
+		field.Text("content").Default(""),
 	}
 }
 

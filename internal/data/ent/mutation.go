@@ -45,6 +45,7 @@ type ArticleMutation struct {
 	url           *string
 	create_time   *string
 	is_show       *bool
+	content       *string
 	clearedFields map[string]struct{}
 	done          bool
 	oldValue      func(context.Context) (*Article, error)
@@ -407,6 +408,42 @@ func (m *ArticleMutation) ResetIsShow() {
 	m.is_show = nil
 }
 
+// SetContent sets the "content" field.
+func (m *ArticleMutation) SetContent(s string) {
+	m.content = &s
+}
+
+// Content returns the value of the "content" field in the mutation.
+func (m *ArticleMutation) Content() (r string, exists bool) {
+	v := m.content
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldContent returns the old "content" field's value of the Article entity.
+// If the Article object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *ArticleMutation) OldContent(ctx context.Context) (v string, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldContent is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldContent requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldContent: %w", err)
+	}
+	return oldValue.Content, nil
+}
+
+// ResetContent resets all changes to the "content" field.
+func (m *ArticleMutation) ResetContent() {
+	m.content = nil
+}
+
 // Where appends a list predicates to the ArticleMutation builder.
 func (m *ArticleMutation) Where(ps ...predicate.Article) {
 	m.predicates = append(m.predicates, ps...)
@@ -441,7 +478,7 @@ func (m *ArticleMutation) Type() string {
 // order to get all numeric fields that were incremented/decremented, call
 // AddedFields().
 func (m *ArticleMutation) Fields() []string {
-	fields := make([]string, 0, 7)
+	fields := make([]string, 0, 8)
 	if m.title != nil {
 		fields = append(fields, article.FieldTitle)
 	}
@@ -462,6 +499,9 @@ func (m *ArticleMutation) Fields() []string {
 	}
 	if m.is_show != nil {
 		fields = append(fields, article.FieldIsShow)
+	}
+	if m.content != nil {
+		fields = append(fields, article.FieldContent)
 	}
 	return fields
 }
@@ -485,6 +525,8 @@ func (m *ArticleMutation) Field(name string) (ent.Value, bool) {
 		return m.CreateTime()
 	case article.FieldIsShow:
 		return m.IsShow()
+	case article.FieldContent:
+		return m.Content()
 	}
 	return nil, false
 }
@@ -508,6 +550,8 @@ func (m *ArticleMutation) OldField(ctx context.Context, name string) (ent.Value,
 		return m.OldCreateTime(ctx)
 	case article.FieldIsShow:
 		return m.OldIsShow(ctx)
+	case article.FieldContent:
+		return m.OldContent(ctx)
 	}
 	return nil, fmt.Errorf("unknown Article field %s", name)
 }
@@ -565,6 +609,13 @@ func (m *ArticleMutation) SetField(name string, value ent.Value) error {
 			return fmt.Errorf("unexpected type %T for field %s", value, name)
 		}
 		m.SetIsShow(v)
+		return nil
+	case article.FieldContent:
+		v, ok := value.(string)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetContent(v)
 		return nil
 	}
 	return fmt.Errorf("unknown Article field %s", name)
@@ -635,6 +686,9 @@ func (m *ArticleMutation) ResetField(name string) error {
 		return nil
 	case article.FieldIsShow:
 		m.ResetIsShow()
+		return nil
+	case article.FieldContent:
+		m.ResetContent()
 		return nil
 	}
 	return fmt.Errorf("unknown Article field %s", name)

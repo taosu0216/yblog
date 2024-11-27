@@ -59,9 +59,9 @@ func NewHTTPServer(c *conf.Server, ac *conf.Auth, bs *service.BlugService, logge
 		// 前端页面
 		{
 			// 首页 { 头像 | 文章列表 }
-			route.GET("/static/index/page", bs.GetIndex)
+			route.GET("/static/index/page", bs.GetIndex, rateLimitFilter())
 			//route.GET("/static/avatar", bs.GetAvatar)
-			route.GET("/static/articles/{article}", bs.GetArticle)
+			route.GET("/static/articles/{article}", bs.GetArticle, rateLimitFilter())
 		}
 	}
 
@@ -88,7 +88,6 @@ func NewWhiteListMatcher() selector.MatchFunc {
 		} else {
 			ip = header.RequestHeader().Get("X-RemoteAddr")
 		}
-		log.Infof("req ip:%s, operation is:%s", ip, operation)
 		if _, ok := whiteList[operation]; ok {
 			return false
 		}
@@ -106,17 +105,21 @@ func rateLimitFilter() http.FilterFunc {
 	return func(next netHttp.Handler) netHttp.Handler {
 		return netHttp.HandlerFunc(func(w netHttp.ResponseWriter, req *netHttp.Request) {
 			ip := ""
-			ip = strings.Split(req.RemoteAddr, ":")[0]
+			ip = req.Header.Get("X-Real-Ip")
+			log.Info("1. X-Real-Ip: ", ip)
 			if ip == "" {
 				ip = req.Header.Get("X-Forwarded-For")
+				log.Info("2. X-Forwarded-For: ", ip)
 				if ip == "" {
-					ip = req.Header.Get("X-Real-Ip")
+					ip = strings.Split(req.RemoteAddr, ":")[0]
+					log.Info("3. RemoteAddr: ", ip)
 				}
 			}
 			if value, ok := blackIpList.Load(ip); ok && value == true {
 				netHttp.Error(w, pkg.BlackListMsg, 403)
 				return
 			}
+			log.Infof("req ip:%s, operation is:%s", ip, req.URL.Path)
 			req.Header.Add("X-RemoteAddr", strings.Split(req.RemoteAddr, ":")[0])
 			sum := ipCounterFunc(ip)
 			if sum >= 30 {

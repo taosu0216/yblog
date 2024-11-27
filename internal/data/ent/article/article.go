@@ -26,6 +26,8 @@ const (
 	FieldCreateTime = "create_time"
 	// FieldIsShow holds the string denoting the is_show field in the database.
 	FieldIsShow = "is_show"
+	// FieldContent holds the string denoting the content field in the database.
+	FieldContent = "content"
 	// Table holds the table name of the article in the database.
 	Table = "articles"
 )
@@ -40,6 +42,7 @@ var Columns = []string{
 	FieldURL,
 	FieldCreateTime,
 	FieldIsShow,
+	FieldContent,
 }
 
 // ValidColumn reports if the column name is valid (part of the table columns).
@@ -57,6 +60,8 @@ var (
 	DefaultCreateTime string
 	// DefaultIsShow holds the default value on creation for the "is_show" field.
 	DefaultIsShow bool
+	// DefaultContent holds the default value on creation for the "content" field.
+	DefaultContent string
 	// DefaultID holds the default value on creation for the "id" field.
 	DefaultID func() uuid.UUID
 )
@@ -102,4 +107,9 @@ func ByCreateTime(opts ...sql.OrderTermOption) OrderOption {
 // ByIsShow orders the results by the is_show field.
 func ByIsShow(opts ...sql.OrderTermOption) OrderOption {
 	return sql.OrderByField(FieldIsShow, opts...).ToFunc()
+}
+
+// ByContent orders the results by the content field.
+func ByContent(opts ...sql.OrderTermOption) OrderOption {
+	return sql.OrderByField(FieldContent, opts...).ToFunc()
 }

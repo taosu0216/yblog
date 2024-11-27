@@ -39,3 +39,17 @@ var (
 	PermissionDeniedErr = errors.New("permission denied")
 	RateLimitErr        = errors.New("rate limit")
 )
+
+const (
+	TASK_FLUSH_CACHE      = "task:flush-cache"
+	TASK_GET_MACHINE_INFO = "task:get-machine-info"
+
+	STATUS_INITIALIZING = "initializing"
+	STATUS_RUNNING      = "running"
+	STATUS_SUCCESS      = "success"
+	STATUS_FAIL         = "fail"
+	STATUS_CANCEL       = "cancel"
+
+	DEFAULT_QUEUE = "default"
+	DEATH_QUEUE   = "death"
+)

@@ -89,6 +89,10 @@ ent:
 migration:
 	cd cmd/ent && go run migration.go
 
+.PHONY: dp
+dp:
+	./deploy.sh
+
 # show help
 help:
 	@echo ''

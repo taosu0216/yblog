@@ -78,6 +78,20 @@ func (ac *ArticleCreate) SetNillableIsShow(b *bool) *ArticleCreate {
 	return ac
 }
 
+// SetContent sets the "content" field.
+func (ac *ArticleCreate) SetContent(s string) *ArticleCreate {
+	ac.mutation.SetContent(s)
+	return ac
+}
+
+// SetNillableContent sets the "content" field if the given value is not nil.
+func (ac *ArticleCreate) SetNillableContent(s *string) *ArticleCreate {
+	if s != nil {
+		ac.SetContent(*s)
+	}
+	return ac
+}
+
 // SetID sets the "id" field.
 func (ac *ArticleCreate) SetID(u uuid.UUID) *ArticleCreate {
 	ac.mutation.SetID(u)
@@ -135,6 +149,10 @@ func (ac *ArticleCreate) defaults() {
 		v := article.DefaultIsShow
 		ac.mutation.SetIsShow(v)
 	}
+	if _, ok := ac.mutation.Content(); !ok {
+		v := article.DefaultContent
+		ac.mutation.SetContent(v)
+	}
 	if _, ok := ac.mutation.ID(); !ok {
 		v := article.DefaultID()
 		ac.mutation.SetID(v)
@@ -163,6 +181,9 @@ func (ac *ArticleCreate) check() error {
 	}
 	if _, ok := ac.mutation.IsShow(); !ok {
 		return &ValidationError{Name: "is_show", err: errors.New(`ent: missing required field "Article.is_show"`)}
+	}
+	if _, ok := ac.mutation.Content(); !ok {
+		return &ValidationError{Name: "content", err: errors.New(`ent: missing required field "Article.content"`)}
 	}
 	return nil
 }
@@ -226,6 +247,10 @@ func (ac *ArticleCreate) createSpec() (*Article, *sqlgraph.CreateSpec) {
 	if value, ok := ac.mutation.IsShow(); ok {
 		_spec.SetField(article.FieldIsShow, field.TypeBool, value)
 		_node.IsShow = value
+	}
+	if value, ok := ac.mutation.Content(); ok {
+		_spec.SetField(article.FieldContent, field.TypeString, value)
+		_node.Content = value
 	}
 	return _node, _spec
 }

@@ -26,6 +26,10 @@ func init() {
 	articleDescIsShow := articleFields[7].Descriptor()
 	// article.DefaultIsShow holds the default value on creation for the is_show field.
 	article.DefaultIsShow = articleDescIsShow.Default.(bool)
+	// articleDescContent is the schema descriptor for content field.
+	articleDescContent := articleFields[8].Descriptor()
+	// article.DefaultContent holds the default value on creation for the content field.
+	article.DefaultContent = articleDescContent.Default.(string)
 	// articleDescID is the schema descriptor for id field.
 	articleDescID := articleFields[0].Descriptor()
 	// article.DefaultID holds the default value on creation for the id field.

@@ -16,8 +16,9 @@ var (
 		{Name: "category", Type: field.TypeString},
 		{Name: "tags", Type: field.TypeString},
 		{Name: "url", Type: field.TypeString},
-		{Name: "create_time", Type: field.TypeString, Default: "2024-11-25 21:51:17"},
+		{Name: "create_time", Type: field.TypeString, Default: "2024-11-27 11:55:19"},
 		{Name: "is_show", Type: field.TypeBool, Default: true},
+		{Name: "content", Type: field.TypeString, Size: 2147483647, Default: ""},
 	}
 	// ArticlesTable holds the schema information for the "articles" table.
 	ArticlesTable = &schema.Table{

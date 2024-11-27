@@ -44,9 +44,9 @@ func (f *blugRepo) UploadArticleInData(title, desc, category, tags, url string, 
 			Category:    category,
 			CreatedTime: pkg.NowTimeStr(),
 		}
-		aStr, err := pkg.AnyToJsonStr(a)
-		if err != nil {
-			f.log.Error(err)
+		aStr, err2 := pkg.AnyToJsonStr(a)
+		if err2 != nil {
+			f.log.Error(err2)
 		} else {
 			f.data.ArticleCache.LPush(ctx, pkg.ArticleListKey, aStr)
 			f.data.ArticleCache.HSet(ctx, pkg.ArticleMapKey, title, aStr)
@@ -87,7 +87,8 @@ func (f *blugRepo) GetArticleListInData(ctx context.Context, offset int) (*v1.Ge
 		}
 	}
 
-	articles, err := f.data.DB.Article.Query().Where(article.IsShowEQ(true)).Order(ent.Asc(article.FieldCreateTime)).All(ctx)
+	articles, err := f.data.DB.Article.Query().Where(article.IsShowEQ(true)).Where(article.ContentContains("vps")).Order(ent.Asc(article.FieldCreateTime)).All(ctx)
+	//articles, err := f.data.DB.Article.Query().Where(article.IsShowEQ(true)).Order(ent.Asc(article.FieldCreateTime)).All(ctx)
 	if err != nil {
 		f.log.Error(err)
 		return &v1.GetArticleListResp{}, pkg.InternalErr
@@ -106,7 +107,7 @@ func (f *blugRepo) GetArticleListInData(ctx context.Context, offset int) (*v1.Ge
 			Desc:        aObj.Desc,
 			Tags:        aObj.Tags,
 			Category:    aObj.Category,
-			CreatedTime: pkg.NowTimeStr(),
+			CreatedTime: aObj.CreateTime,
 		}
 		aStr, err := pkg.AnyToJsonStr(a)
 		if err != nil {
