@@ -40,7 +40,8 @@ func handler(ctx context.Context, t *asynq.Task) error {
 }
 
 func flushCacheFunc(ctx context.Context, tp async.TaskPayload) error {
-	//todo: update the status to STATUS_RUNNING in db   	tp.Status = pkg.STATUS_RUNNING
+	//todo: flushCacheFunc 开始时更新db中对应任务状态
+	// update the status to STATUS_RUNNING in db   	tp.Status = pkg.STATUS_RUNNING
 	err := async.GetAsynqServer().RedisClient.Del(ctx, pkg.ArticleListKey).Err()
 	if err != nil {
 		log.Println(err)
@@ -51,7 +52,7 @@ func flushCacheFunc(ctx context.Context, tp async.TaskPayload) error {
 			log.Println(err2)
 			return err
 		}
-		// todo: 死信队列处理中入库
+		// todo: 死信队列接收失败任务及后续logic开发
 		_, err3 := async.GetAsynqClient().Enqueue(asynq.NewTask(pkg.TASK_FLUSH_CACHE, payload), asynq.Queue(pkg.DEFAULT_QUEUE))
 		if err3 != nil {
 			log.Println(err3)
@@ -75,7 +76,7 @@ func flushCacheFunc(ctx context.Context, tp async.TaskPayload) error {
 	return nil
 }
 
-// todo
+// todo: getMachineInfoFunc 任务logic
 func getMachineInfoFunc(ctx context.Context, tp async.TaskPayload) error {
 	return nil
 }

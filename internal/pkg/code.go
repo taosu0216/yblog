@@ -43,6 +43,7 @@ var (
 const (
 	TASK_FLUSH_CACHE      = "task:flush-cache"
 	TASK_GET_MACHINE_INFO = "task:get-machine-info"
+	// todo: 模仿getMachineInfoFunc 制作获取网络带宽任务
 
 	STATUS_INITIALIZING = "initializing"
 	STATUS_RUNNING      = "running"
