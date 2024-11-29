@@ -25,4 +25,4 @@ EXPOSE 8000
 EXPOSE 9000
 VOLUME /data/conf
 
-CMD ["./blug", "-conf", "/data/conf/config.yaml"]
+CMD ["./blug", "-conf", "/data/conf/cloud-controlPlane.yaml"]

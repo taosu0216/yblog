@@ -59,9 +59,9 @@ func NewHTTPServer(c *conf.Server, ac *conf.Auth, bs *service.BlugService, logge
 		// 前端页面
 		{
 			// 首页 { 头像 | 文章列表 }
-			route.GET("/static/index/page", bs.GetIndex, rateLimitFilter())
+			route.GET("/static/index/page", bs.GetIndex)
 			//route.GET("/static/avatar", bs.GetAvatar)
-			route.GET("/static/articles/{article}", bs.GetArticle, rateLimitFilter())
+			route.GET("/static/articles/{article}", bs.GetArticle)
 		}
 	}
 

@@ -38,3 +38,7 @@ trace:
   endpoint: "http://192.168.2.60:14268/api/traces"
 auth:
   jwtkey: "******"
+daemon:
+  is_init: true
+  is_controller: true
+  skip: 1

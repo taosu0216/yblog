@@ -6,7 +6,10 @@ import (
 	"context"
 )
 
-func InitDaemonSet(ctx context.Context) {
-	controlPlane.InitDaemonSet(ctx)
-	workerNode.InitDaemonSet(ctx)
+func InitDaemonSet(ctx context.Context, isControlPlane bool, skip int) {
+	if isControlPlane {
+		controlPlane.InitDaemonSet(ctx, skip)
+	} else {
+		workerNode.InitDaemonSet(ctx, skip)
+	}
 }

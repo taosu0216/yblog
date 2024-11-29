@@ -41,7 +41,7 @@ var (
 )
 
 func init() {
-	flag.StringVar(&flagconf, "conf", "../../configs", "config path, eg: -conf config.yaml.template")
+	flag.StringVar(&flagconf, "conf", "../../configs/control", "config path, eg: -conf config.yaml.template")
 	Name = "blugSvc"
 	Version = "dev/v1"
 }
@@ -63,7 +63,7 @@ func newApp(logger log.Logger, gs *grpc.Server, hs *http.Server) *kratos.App {
 func main() {
 	flag.Parse()
 	currentDir := pkg.GetRootLocation()
-	logger := loggers.InitLog(currentDir)
+	logger := loggers.InitLog(currentDir, 2)
 	c := config.New(
 		config.WithSource(
 			file.NewSource(flagconf),
@@ -78,7 +78,7 @@ func main() {
 	if err := c.Scan(&bc); err != nil {
 		panic(err)
 	}
-	log.Info(bc.Aiservice.Baseurl, bc.Aiservice.Apikey, bc.Aiservice.Model)
+	log.Info(bc.Daemon.IsController)
 	aiService.InitAiservice(bc.Aiservice.Baseurl, bc.Aiservice.Apikey, bc.Aiservice.Model)
 	auth.InitAuth(bc.Auth.Jwtkey)
 	markdown.InitRenderer()
@@ -94,8 +94,10 @@ func main() {
 	defer cleanup()
 
 	async.InitAsynq(bc.Data)
-	ctx := context.Background()
-	go daemonSet.InitDaemonSet(ctx)
+	if bc.Daemon.IsInit {
+		ctx := context.Background()
+		go daemonSet.InitDaemonSet(ctx, bc.Daemon.IsController, int(bc.Daemon.Skip))
+	}
 
 	// start and wait for stop signal
 	if err = app.Run(); err != nil {

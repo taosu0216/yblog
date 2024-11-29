@@ -16,7 +16,7 @@ type ZapLogger struct {
 	Sugar  *zap.SugaredLogger
 }
 
-func InitLog(currentDir string) *ZapLogger {
+func InitLog(currentDir string, skip int) *ZapLogger {
 	var coreArr []zapcore.Core
 	var logger *zap.Logger
 	// 获取编码器
@@ -65,7 +65,7 @@ func InitLog(currentDir string) *ZapLogger {
 	coreArr = append(coreArr, errorFileCore)
 
 	// zap.AddCaller()为显示文件名和行号，可省略
-	logger = zap.New(zapcore.NewTee(coreArr...), zap.AddCaller(), zap.AddCallerSkip(2))
+	logger = zap.New(zapcore.NewTee(coreArr...), zap.AddCaller(), zap.AddCallerSkip(skip))
 	sugar := logger.Sugar()
 	logger.Info("init logger success")
 

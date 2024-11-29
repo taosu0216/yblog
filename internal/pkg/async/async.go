@@ -7,6 +7,8 @@ import (
 	"github.com/go-kratos/kratos/v2/log"
 	"github.com/hibiken/asynq"
 	"github.com/redis/go-redis/v9"
+
+	_ "github.com/lib/pq"
 )
 
 type AsynqClient struct {
