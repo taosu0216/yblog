@@ -25,6 +25,8 @@ const (
 	FieldCreateTime = "create_time"
 	// FieldFinishTime holds the string denoting the finish_time field in the database.
 	FieldFinishTime = "finish_time"
+	// FieldRetry holds the string denoting the retry field in the database.
+	FieldRetry = "retry"
 	// Table holds the table name of the task in the database.
 	Table = "tasks"
 )
@@ -39,6 +41,7 @@ var Columns = []string{
 	FieldReason,
 	FieldCreateTime,
 	FieldFinishTime,
+	FieldRetry,
 }
 
 // ValidColumn reports if the column name is valid (part of the table columns).
@@ -66,6 +69,8 @@ var (
 	DefaultCreateTime string
 	// DefaultFinishTime holds the default value on creation for the "finish_time" field.
 	DefaultFinishTime string
+	// DefaultRetry holds the default value on creation for the "retry" field.
+	DefaultRetry int
 )
 
 // OrderOption defines the ordering options for the Task queries.
@@ -109,4 +114,9 @@ func ByCreateTime(opts ...sql.OrderTermOption) OrderOption {
 // ByFinishTime orders the results by the finish_time field.
 func ByFinishTime(opts ...sql.OrderTermOption) OrderOption {
 	return sql.OrderByField(FieldFinishTime, opts...).ToFunc()
+}
+
+// ByRetry orders the results by the retry field.
+func ByRetry(opts ...sql.OrderTermOption) OrderOption {
+	return sql.OrderByField(FieldRetry, opts...).ToFunc()
 }

@@ -75,7 +75,6 @@ func (obj workerNodeObj) flushCacheFunc(ctx context.Context, tp async.TaskPayloa
 			return errors.New(errStr)
 		}
 
-		// todo: 死信队列接收失败任务及后续logic开发
 		_, err3 := workerNode.client.AsynqClient.Enqueue(asynq.NewTask(tp.TaskType, payload), asynq.Queue(pkg.DEATH_QUEUE))
 		if err3 != nil {
 			errStr = fmt.Sprintf("|| {workerNode} flush cache func %s [delete list key] || failed job to death queue err is: %v", tp.TaskId, err3.Error())
@@ -99,7 +98,6 @@ func (obj workerNodeObj) flushCacheFunc(ctx context.Context, tp async.TaskPayloa
 			return errors.New(errStr)
 		}
 
-		// todo: 死信队列接收失败任务及后续logic开发
 		_, err3 := workerNode.client.AsynqClient.Enqueue(asynq.NewTask(tp.TaskType, payload), asynq.Queue(pkg.DEATH_QUEUE))
 		if err3 != nil {
 			errStr = fmt.Sprintf("|| {workerNode} flush cache func %s [delete map key] || failed job to death queue err is: %v", tp.TaskId, err3.Error())

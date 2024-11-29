@@ -50,6 +50,6 @@ func main() {
 	async.InitAsynq(bc.Data)
 	if bc.Daemon.IsInit {
 		ctx := context.Background()
-		daemonSet.InitDaemonSet(ctx, bc.Daemon.IsController, int(bc.Daemon.Skip))
+		daemonSet.InitDaemonSet(ctx, bc.Daemon.IsController, int(bc.Daemon.Skip), int(bc.Daemon.MaxRetires))
 	}
 }

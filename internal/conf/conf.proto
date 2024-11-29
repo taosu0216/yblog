@@ -67,4 +67,5 @@ message Daemon {
   bool is_init = 1;
   bool is_controller = 2;
   int64 skip = 3;
+  int64 max_retires = 4;
 }

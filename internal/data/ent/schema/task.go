@@ -19,6 +19,7 @@ func (Task) Fields() []ent.Field {
 		field.String("reason").Default(""),
 		field.String("create_time").Default(pkg.NowTimeStr()).Immutable(),
 		field.String("finish_time").Default(""),
+		field.Int("retry").Default(0),
 	}
 }
 

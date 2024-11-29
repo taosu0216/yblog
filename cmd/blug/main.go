@@ -96,7 +96,7 @@ func main() {
 	async.InitAsynq(bc.Data)
 	if bc.Daemon.IsInit {
 		ctx := context.Background()
-		go daemonSet.InitDaemonSet(ctx, bc.Daemon.IsController, int(bc.Daemon.Skip))
+		go daemonSet.InitDaemonSet(ctx, bc.Daemon.IsController, int(bc.Daemon.Skip), int(bc.Daemon.MaxRetires))
 	}
 
 	// start and wait for stop signal

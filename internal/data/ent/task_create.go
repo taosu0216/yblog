@@ -117,6 +117,20 @@ func (tc *TaskCreate) SetNillableFinishTime(s *string) *TaskCreate {
 	return tc
 }
 
+// SetRetry sets the "retry" field.
+func (tc *TaskCreate) SetRetry(i int) *TaskCreate {
+	tc.mutation.SetRetry(i)
+	return tc
+}
+
+// SetNillableRetry sets the "retry" field if the given value is not nil.
+func (tc *TaskCreate) SetNillableRetry(i *int) *TaskCreate {
+	if i != nil {
+		tc.SetRetry(*i)
+	}
+	return tc
+}
+
 // Mutation returns the TaskMutation object of the builder.
 func (tc *TaskCreate) Mutation() *TaskMutation {
 	return tc.mutation
@@ -180,6 +194,10 @@ func (tc *TaskCreate) defaults() {
 		v := task.DefaultFinishTime
 		tc.mutation.SetFinishTime(v)
 	}
+	if _, ok := tc.mutation.Retry(); !ok {
+		v := task.DefaultRetry
+		tc.mutation.SetRetry(v)
+	}
 }
 
 // check runs all checks and user-defined validators on the builder.
@@ -204,6 +222,9 @@ func (tc *TaskCreate) check() error {
 	}
 	if _, ok := tc.mutation.FinishTime(); !ok {
 		return &ValidationError{Name: "finish_time", err: errors.New(`ent: missing required field "Task.finish_time"`)}
+	}
+	if _, ok := tc.mutation.Retry(); !ok {
+		return &ValidationError{Name: "retry", err: errors.New(`ent: missing required field "Task.retry"`)}
 	}
 	return nil
 }
@@ -258,6 +279,10 @@ func (tc *TaskCreate) createSpec() (*Task, *sqlgraph.CreateSpec) {
 	if value, ok := tc.mutation.FinishTime(); ok {
 		_spec.SetField(task.FieldFinishTime, field.TypeString, value)
 		_node.FinishTime = value
+	}
+	if value, ok := tc.mutation.Retry(); ok {
+		_spec.SetField(task.FieldRetry, field.TypeInt, value)
+		_node.Retry = value
 	}
 	return _node, _spec
 }

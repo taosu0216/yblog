@@ -111,6 +111,27 @@ func (tu *TaskUpdate) SetNillableFinishTime(s *string) *TaskUpdate {
 	return tu
 }
 
+// SetRetry sets the "retry" field.
+func (tu *TaskUpdate) SetRetry(i int) *TaskUpdate {
+	tu.mutation.ResetRetry()
+	tu.mutation.SetRetry(i)
+	return tu
+}
+
+// SetNillableRetry sets the "retry" field if the given value is not nil.
+func (tu *TaskUpdate) SetNillableRetry(i *int) *TaskUpdate {
+	if i != nil {
+		tu.SetRetry(*i)
+	}
+	return tu
+}
+
+// AddRetry adds i to the "retry" field.
+func (tu *TaskUpdate) AddRetry(i int) *TaskUpdate {
+	tu.mutation.AddRetry(i)
+	return tu
+}
+
 // Mutation returns the TaskMutation object of the builder.
 func (tu *TaskUpdate) Mutation() *TaskMutation {
 	return tu.mutation
@@ -169,6 +190,12 @@ func (tu *TaskUpdate) sqlSave(ctx context.Context) (n int, err error) {
 	}
 	if value, ok := tu.mutation.FinishTime(); ok {
 		_spec.SetField(task.FieldFinishTime, field.TypeString, value)
+	}
+	if value, ok := tu.mutation.Retry(); ok {
+		_spec.SetField(task.FieldRetry, field.TypeInt, value)
+	}
+	if value, ok := tu.mutation.AddedRetry(); ok {
+		_spec.AddField(task.FieldRetry, field.TypeInt, value)
 	}
 	if n, err = sqlgraph.UpdateNodes(ctx, tu.driver, _spec); err != nil {
 		if _, ok := err.(*sqlgraph.NotFoundError); ok {
@@ -274,6 +301,27 @@ func (tuo *TaskUpdateOne) SetNillableFinishTime(s *string) *TaskUpdateOne {
 	return tuo
 }
 
+// SetRetry sets the "retry" field.
+func (tuo *TaskUpdateOne) SetRetry(i int) *TaskUpdateOne {
+	tuo.mutation.ResetRetry()
+	tuo.mutation.SetRetry(i)
+	return tuo
+}
+
+// SetNillableRetry sets the "retry" field if the given value is not nil.
+func (tuo *TaskUpdateOne) SetNillableRetry(i *int) *TaskUpdateOne {
+	if i != nil {
+		tuo.SetRetry(*i)
+	}
+	return tuo
+}
+
+// AddRetry adds i to the "retry" field.
+func (tuo *TaskUpdateOne) AddRetry(i int) *TaskUpdateOne {
+	tuo.mutation.AddRetry(i)
+	return tuo
+}
+
 // Mutation returns the TaskMutation object of the builder.
 func (tuo *TaskUpdateOne) Mutation() *TaskMutation {
 	return tuo.mutation
@@ -362,6 +410,12 @@ func (tuo *TaskUpdateOne) sqlSave(ctx context.Context) (_node *Task, err error) 
 	}
 	if value, ok := tuo.mutation.FinishTime(); ok {
 		_spec.SetField(task.FieldFinishTime, field.TypeString, value)
+	}
+	if value, ok := tuo.mutation.Retry(); ok {
+		_spec.SetField(task.FieldRetry, field.TypeInt, value)
+	}
+	if value, ok := tuo.mutation.AddedRetry(); ok {
+		_spec.AddField(task.FieldRetry, field.TypeInt, value)
 	}
 	_node = &Task{config: tuo.config}
 	_spec.Assign = _node.assignValues

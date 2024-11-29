@@ -1305,6 +1305,8 @@ type TaskMutation struct {
 	reason        *string
 	create_time   *string
 	finish_time   *string
+	retry         *int
+	addretry      *int
 	clearedFields map[string]struct{}
 	done          bool
 	oldValue      func(context.Context) (*Task, error)
@@ -1661,6 +1663,62 @@ func (m *TaskMutation) ResetFinishTime() {
 	m.finish_time = nil
 }
 
+// SetRetry sets the "retry" field.
+func (m *TaskMutation) SetRetry(i int) {
+	m.retry = &i
+	m.addretry = nil
+}
+
+// Retry returns the value of the "retry" field in the mutation.
+func (m *TaskMutation) Retry() (r int, exists bool) {
+	v := m.retry
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldRetry returns the old "retry" field's value of the Task entity.
+// If the Task object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *TaskMutation) OldRetry(ctx context.Context) (v int, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldRetry is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldRetry requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldRetry: %w", err)
+	}
+	return oldValue.Retry, nil
+}
+
+// AddRetry adds i to the "retry" field.
+func (m *TaskMutation) AddRetry(i int) {
+	if m.addretry != nil {
+		*m.addretry += i
+	} else {
+		m.addretry = &i
+	}
+}
+
+// AddedRetry returns the value that was added to the "retry" field in this mutation.
+func (m *TaskMutation) AddedRetry() (r int, exists bool) {
+	v := m.addretry
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// ResetRetry resets all changes to the "retry" field.
+func (m *TaskMutation) ResetRetry() {
+	m.retry = nil
+	m.addretry = nil
+}
+
 // Where appends a list predicates to the TaskMutation builder.
 func (m *TaskMutation) Where(ps ...predicate.Task) {
 	m.predicates = append(m.predicates, ps...)
@@ -1695,7 +1753,7 @@ func (m *TaskMutation) Type() string {
 // order to get all numeric fields that were incremented/decremented, call
 // AddedFields().
 func (m *TaskMutation) Fields() []string {
-	fields := make([]string, 0, 7)
+	fields := make([]string, 0, 8)
 	if m.task_id != nil {
 		fields = append(fields, task.FieldTaskID)
 	}
@@ -1716,6 +1774,9 @@ func (m *TaskMutation) Fields() []string {
 	}
 	if m.finish_time != nil {
 		fields = append(fields, task.FieldFinishTime)
+	}
+	if m.retry != nil {
+		fields = append(fields, task.FieldRetry)
 	}
 	return fields
 }
@@ -1739,6 +1800,8 @@ func (m *TaskMutation) Field(name string) (ent.Value, bool) {
 		return m.CreateTime()
 	case task.FieldFinishTime:
 		return m.FinishTime()
+	case task.FieldRetry:
+		return m.Retry()
 	}
 	return nil, false
 }
@@ -1762,6 +1825,8 @@ func (m *TaskMutation) OldField(ctx context.Context, name string) (ent.Value, er
 		return m.OldCreateTime(ctx)
 	case task.FieldFinishTime:
 		return m.OldFinishTime(ctx)
+	case task.FieldRetry:
+		return m.OldRetry(ctx)
 	}
 	return nil, fmt.Errorf("unknown Task field %s", name)
 }
@@ -1820,6 +1885,13 @@ func (m *TaskMutation) SetField(name string, value ent.Value) error {
 		}
 		m.SetFinishTime(v)
 		return nil
+	case task.FieldRetry:
+		v, ok := value.(int)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetRetry(v)
+		return nil
 	}
 	return fmt.Errorf("unknown Task field %s", name)
 }
@@ -1827,13 +1899,21 @@ func (m *TaskMutation) SetField(name string, value ent.Value) error {
 // AddedFields returns all numeric fields that were incremented/decremented during
 // this mutation.
 func (m *TaskMutation) AddedFields() []string {
-	return nil
+	var fields []string
+	if m.addretry != nil {
+		fields = append(fields, task.FieldRetry)
+	}
+	return fields
 }
 
 // AddedField returns the numeric value that was incremented/decremented on a field
 // with the given name. The second boolean return value indicates that this field
 // was not set, or was not defined in the schema.
 func (m *TaskMutation) AddedField(name string) (ent.Value, bool) {
+	switch name {
+	case task.FieldRetry:
+		return m.AddedRetry()
+	}
 	return nil, false
 }
 
@@ -1842,6 +1922,13 @@ func (m *TaskMutation) AddedField(name string) (ent.Value, bool) {
 // type.
 func (m *TaskMutation) AddField(name string, value ent.Value) error {
 	switch name {
+	case task.FieldRetry:
+		v, ok := value.(int)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.AddRetry(v)
+		return nil
 	}
 	return fmt.Errorf("unknown Task numeric field %s", name)
 }
@@ -1889,6 +1976,9 @@ func (m *TaskMutation) ResetField(name string) error {
 		return nil
 	case task.FieldFinishTime:
 		m.ResetFinishTime()
+		return nil
+	case task.FieldRetry:
+		m.ResetRetry()
 		return nil
 	}
 	return fmt.Errorf("unknown Task field %s", name)

@@ -29,7 +29,9 @@ type Task struct {
 	// CreateTime holds the value of the "create_time" field.
 	CreateTime string `json:"create_time,omitempty"`
 	// FinishTime holds the value of the "finish_time" field.
-	FinishTime   string `json:"finish_time,omitempty"`
+	FinishTime string `json:"finish_time,omitempty"`
+	// Retry holds the value of the "retry" field.
+	Retry        int `json:"retry,omitempty"`
 	selectValues sql.SelectValues
 }
 
@@ -38,7 +40,7 @@ func (*Task) scanValues(columns []string) ([]any, error) {
 	values := make([]any, len(columns))
 	for i := range columns {
 		switch columns[i] {
-		case task.FieldID:
+		case task.FieldID, task.FieldRetry:
 			values[i] = new(sql.NullInt64)
 		case task.FieldTaskID, task.FieldTaskName, task.FieldTaskType, task.FieldStatus, task.FieldReason, task.FieldCreateTime, task.FieldFinishTime:
 			values[i] = new(sql.NullString)
@@ -105,6 +107,12 @@ func (t *Task) assignValues(columns []string, values []any) error {
 			} else if value.Valid {
 				t.FinishTime = value.String
 			}
+		case task.FieldRetry:
+			if value, ok := values[i].(*sql.NullInt64); !ok {
+				return fmt.Errorf("unexpected type %T for field retry", values[i])
+			} else if value.Valid {
+				t.Retry = int(value.Int64)
+			}
 		default:
 			t.selectValues.Set(columns[i], values[i])
 		}
@@ -161,6 +169,9 @@ func (t *Task) String() string {
 	builder.WriteString(", ")
 	builder.WriteString("finish_time=")
 	builder.WriteString(t.FinishTime)
+	builder.WriteString(", ")
+	builder.WriteString("retry=")
+	builder.WriteString(fmt.Sprintf("%v", t.Retry))
 	builder.WriteByte(')')
 	return builder.String()
 }

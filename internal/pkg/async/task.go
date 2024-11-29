@@ -5,6 +5,7 @@ type TaskPayload struct {
 	TaskType string `json:"task_type"`
 	TaskName string `json:"task_name"`
 	Queue    string `json:"queue"`
+	Retry    int    `json:"retry"`
 	Status   string
 	Reason   string
 }

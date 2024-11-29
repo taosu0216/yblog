@@ -88,6 +88,11 @@ func FinishTime(v string) predicate.Task {
 	return predicate.Task(sql.FieldEQ(FieldFinishTime, v))
 }
 
+// Retry applies equality check predicate on the "retry" field. It's identical to RetryEQ.
+func Retry(v int) predicate.Task {
+	return predicate.Task(sql.FieldEQ(FieldRetry, v))
+}
+
 // TaskIDEQ applies the EQ predicate on the "task_id" field.
 func TaskIDEQ(v string) predicate.Task {
 	return predicate.Task(sql.FieldEQ(FieldTaskID, v))
@@ -541,6 +546,46 @@ func FinishTimeEqualFold(v string) predicate.Task {
 // FinishTimeContainsFold applies the ContainsFold predicate on the "finish_time" field.
 func FinishTimeContainsFold(v string) predicate.Task {
 	return predicate.Task(sql.FieldContainsFold(FieldFinishTime, v))
+}
+
+// RetryEQ applies the EQ predicate on the "retry" field.
+func RetryEQ(v int) predicate.Task {
+	return predicate.Task(sql.FieldEQ(FieldRetry, v))
+}
+
+// RetryNEQ applies the NEQ predicate on the "retry" field.
+func RetryNEQ(v int) predicate.Task {
+	return predicate.Task(sql.FieldNEQ(FieldRetry, v))
+}
+
+// RetryIn applies the In predicate on the "retry" field.
+func RetryIn(vs ...int) predicate.Task {
+	return predicate.Task(sql.FieldIn(FieldRetry, vs...))
+}
+
+// RetryNotIn applies the NotIn predicate on the "retry" field.
+func RetryNotIn(vs ...int) predicate.Task {
+	return predicate.Task(sql.FieldNotIn(FieldRetry, vs...))
+}
+
+// RetryGT applies the GT predicate on the "retry" field.
+func RetryGT(v int) predicate.Task {
+	return predicate.Task(sql.FieldGT(FieldRetry, v))
+}
+
+// RetryGTE applies the GTE predicate on the "retry" field.
+func RetryGTE(v int) predicate.Task {
+	return predicate.Task(sql.FieldGTE(FieldRetry, v))
+}
+
+// RetryLT applies the LT predicate on the "retry" field.
+func RetryLT(v int) predicate.Task {
+	return predicate.Task(sql.FieldLT(FieldRetry, v))
+}
+
+// RetryLTE applies the LTE predicate on the "retry" field.
+func RetryLTE(v int) predicate.Task {
+	return predicate.Task(sql.FieldLTE(FieldRetry, v))
 }
 
 // And groups predicates with the AND operator between them.

@@ -91,6 +91,10 @@ func init() {
 	taskDescFinishTime := taskFields[6].Descriptor()
 	// task.DefaultFinishTime holds the default value on creation for the finish_time field.
 	task.DefaultFinishTime = taskDescFinishTime.Default.(string)
+	// taskDescRetry is the schema descriptor for retry field.
+	taskDescRetry := taskFields[7].Descriptor()
+	// task.DefaultRetry holds the default value on creation for the retry field.
+	task.DefaultRetry = taskDescRetry.Default.(int)
 	userFields := schema.User{}.Fields()
 	_ = userFields
 	// userDescCreateTime is the schema descriptor for create_time field.

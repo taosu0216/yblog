@@ -16,7 +16,7 @@ var (
 		{Name: "category", Type: field.TypeString},
 		{Name: "tags", Type: field.TypeString},
 		{Name: "url", Type: field.TypeString},
-		{Name: "create_time", Type: field.TypeString, Default: "2024-11-29 16:34:20"},
+		{Name: "create_time", Type: field.TypeString, Default: "2024-11-29 21:27:02"},
 		{Name: "is_show", Type: field.TypeBool, Default: true},
 		{Name: "content", Type: field.TypeString, Size: 2147483647, Default: ""},
 	}
@@ -49,8 +49,9 @@ var (
 		{Name: "task_type", Type: field.TypeString, Default: ""},
 		{Name: "status", Type: field.TypeString, Default: ""},
 		{Name: "reason", Type: field.TypeString, Default: ""},
-		{Name: "create_time", Type: field.TypeString, Default: "2024-11-29 16:34:20"},
+		{Name: "create_time", Type: field.TypeString, Default: "2024-11-29 21:27:02"},
 		{Name: "finish_time", Type: field.TypeString, Default: ""},
+		{Name: "retry", Type: field.TypeInt, Default: 0},
 	}
 	// TasksTable holds the schema information for the "tasks" table.
 	TasksTable = &schema.Table{

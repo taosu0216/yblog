@@ -17,22 +17,24 @@ var (
 )
 
 type controlPlaneObj struct {
-	srv       async.AsynqServer
-	client    async.AsynqClient
-	inspector async.AsynqInspector
-	ctx       context.Context
+	srv        async.AsynqServer
+	client     async.AsynqClient
+	inspector  async.AsynqInspector
+	ctx        context.Context
+	maxRetries int
 	*loggers.ZapLogger
 }
 
 var controlPlane controlPlaneObj
 
-func InitDaemonSet(ctx context.Context, skip int) {
+func InitDaemonSet(ctx context.Context, skip, maxRetries int) {
 	controlPlane = controlPlaneObj{
-		srv:       async.GetAsynqServer(),
-		client:    async.GetAsynqClient(),
-		inspector: async.GetAsyncInspector(),
-		ZapLogger: loggers.InitLog(pkg.GetRootLocation(), skip),
-		ctx:       ctx,
+		srv:        async.GetAsynqServer(),
+		client:     async.GetAsynqClient(),
+		inspector:  async.GetAsyncInspector(),
+		ZapLogger:  loggers.InitLog(pkg.GetRootLocation(), skip),
+		ctx:        ctx,
+		maxRetries: maxRetries,
 	}
 
 	go controlPlane.flushCacheProducer()
@@ -48,9 +50,10 @@ func InitDaemonSet(ctx context.Context, skip int) {
 			flushCacheCh <- async.TaskPayload{
 				TaskId:   uuid.NewString(),
 				TaskType: pkg.TASK_FLUSH_CACHE,
-				TaskName: pkg.TASK_FLUSH_CACHE + "-" + pkg.NowTimeStr() + "--{1}",
+				TaskName: pkg.TASK_FLUSH_CACHE + "-" + pkg.NowTimeStr(),
 				Status:   pkg.STATUS_INITIALIZING,
 				Queue:    pkg.DEFAULT_QUEUE,
+				Retry:    0,
 			}
 			//getMachineInfoCh <- async.TaskPayload{
 			//	TaskType: pkg.TASK_GET_MACHINE_INFO,
