@@ -6,6 +6,7 @@ import (
 	"blug/internal/data/ent/article"
 	"blug/internal/data/ent/friend"
 	"blug/internal/data/ent/schema"
+	"blug/internal/data/ent/task"
 	"blug/internal/data/ent/user"
 	"time"
 
@@ -60,6 +61,36 @@ func init() {
 	friendDescID := friendFields[0].Descriptor()
 	// friend.DefaultID holds the default value on creation for the id field.
 	friend.DefaultID = friendDescID.Default.(func() uuid.UUID)
+	taskFields := schema.Task{}.Fields()
+	_ = taskFields
+	// taskDescTaskID is the schema descriptor for task_id field.
+	taskDescTaskID := taskFields[0].Descriptor()
+	// task.DefaultTaskID holds the default value on creation for the task_id field.
+	task.DefaultTaskID = taskDescTaskID.Default.(string)
+	// taskDescTaskName is the schema descriptor for task_name field.
+	taskDescTaskName := taskFields[1].Descriptor()
+	// task.DefaultTaskName holds the default value on creation for the task_name field.
+	task.DefaultTaskName = taskDescTaskName.Default.(string)
+	// taskDescTaskType is the schema descriptor for task_type field.
+	taskDescTaskType := taskFields[2].Descriptor()
+	// task.DefaultTaskType holds the default value on creation for the task_type field.
+	task.DefaultTaskType = taskDescTaskType.Default.(string)
+	// taskDescStatus is the schema descriptor for status field.
+	taskDescStatus := taskFields[3].Descriptor()
+	// task.DefaultStatus holds the default value on creation for the status field.
+	task.DefaultStatus = taskDescStatus.Default.(string)
+	// taskDescReason is the schema descriptor for reason field.
+	taskDescReason := taskFields[4].Descriptor()
+	// task.DefaultReason holds the default value on creation for the reason field.
+	task.DefaultReason = taskDescReason.Default.(string)
+	// taskDescCreateTime is the schema descriptor for create_time field.
+	taskDescCreateTime := taskFields[5].Descriptor()
+	// task.DefaultCreateTime holds the default value on creation for the create_time field.
+	task.DefaultCreateTime = taskDescCreateTime.Default.(string)
+	// taskDescFinishTime is the schema descriptor for finish_time field.
+	taskDescFinishTime := taskFields[6].Descriptor()
+	// task.DefaultFinishTime holds the default value on creation for the finish_time field.
+	task.DefaultFinishTime = taskDescFinishTime.Default.(string)
 	userFields := schema.User{}.Fields()
 	_ = userFields
 	// userDescCreateTime is the schema descriptor for create_time field.

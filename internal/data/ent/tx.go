@@ -16,6 +16,8 @@ type Tx struct {
 	Article *ArticleClient
 	// Friend is the client for interacting with the Friend builders.
 	Friend *FriendClient
+	// Task is the client for interacting with the Task builders.
+	Task *TaskClient
 	// User is the client for interacting with the User builders.
 	User *UserClient
 
@@ -151,6 +153,7 @@ func (tx *Tx) Client() *Client {
 func (tx *Tx) init() {
 	tx.Article = NewArticleClient(tx.config)
 	tx.Friend = NewFriendClient(tx.config)
+	tx.Task = NewTaskClient(tx.config)
 	tx.User = NewUserClient(tx.config)
 }
 

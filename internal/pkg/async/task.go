@@ -1,10 +1,10 @@
 package async
 
-import "github.com/google/uuid"
-
 type TaskPayload struct {
-	TaskId   uuid.UUID
-	TaskName string
+	TaskId   string `json:"task_id"`
+	TaskType string `json:"task_type"`
+	TaskName string `json:"task_name"`
+	Queue    string `json:"queue"`
 	Status   string
 	Reason   string
 }

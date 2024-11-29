@@ -9,38 +9,61 @@ import (
 	"github.com/redis/go-redis/v9"
 )
 
-type AsynqServer struct {
-	*asynq.Server
-	RedisClient *redis.Client
+type AsynqClient struct {
+	AsynqClient *asynq.Client
 	Pg          *ent.Client
 }
 
-var asynqClient *asynq.Client
+type AsynqServer struct {
+	AsynqDefaultServer *asynq.Server
+	AsynqDeathServer   *asynq.Server
+	RedisClient        *redis.Client
+	Pg                 *ent.Client
+}
+
+type AsynqInspector struct {
+	AsynqInspector *asynq.Inspector
+}
+
+var asynqClient AsynqClient
 var asynqServer AsynqServer
-var asyncInspector *asynq.Inspector
+var asyncInspector AsynqInspector
 
-func InitAsynq(bc *conf.Data, logger log.Logger) {
-	initAsynqClient(bc.Article, logger)
-	initAsynqServer(bc, logger)
-	initAsyncInspector(bc.Article, logger)
+func InitAsynq(bc *conf.Data) {
+	initAsynqClient(bc)
+	initAsynqServer(bc)
+	initAsyncInspector(bc.Article)
 }
 
-func initAsynqClient(bc *conf.Data_Redis, logger log.Logger) {
-	asynqClient = asynq.NewClient(asynq.RedisClientOpt{Addr: bc.Addr, Username: bc.User, Password: bc.Password})
+func initAsynqClient(bc *conf.Data) {
+	asynqClient = AsynqClient{}
+	asynqClient.AsynqClient = asynq.NewClient(asynq.RedisClientOpt{Addr: bc.Article.Addr, Username: bc.Article.User, Password: bc.Article.Password})
+	var err error
+	asynqClient.Pg, err = ent.Open("postgres", bc.Database.Source)
+	if err != nil {
+		log.Fatalf("failed opening connection to postgres: %v", err)
+		panic(err)
+	}
 }
 
-func initAsynqServer(bc *conf.Data, logger log.Logger) {
-	asynqServer.Server = asynq.NewServer(
+func initAsynqServer(bc *conf.Data) {
+	asynqServer = AsynqServer{}
+	asynqServer.AsynqDefaultServer = asynq.NewServer(
 		asynq.RedisClientOpt{Addr: bc.Article.Addr, Username: bc.Article.User, Password: bc.Article.Password},
 		asynq.Config{
-			// Specify how many concurrent workers to use
 			Concurrency: 10,
-			// Optionally specify multiple queues with different priority.
 			Queues: map[string]int{
 				pkg.DEFAULT_QUEUE: 1,
-				pkg.DEATH_QUEUE:   1,
 			},
-			// See the godoc for other configuration options
+		},
+	)
+	asynqServer.AsynqDeathServer = asynq.NewServer(
+		asynq.RedisClientOpt{Addr: bc.Article.Addr, Username: bc.Article.User, Password: bc.Article.Password},
+		asynq.Config{
+			Concurrency: 10,
+			Queues: map[string]int{
+				pkg.DEATH_QUEUE: 1,
+			},
 		},
 	)
 	asynqServer.RedisClient = redis.NewClient(&redis.Options{
@@ -55,16 +78,17 @@ func initAsynqServer(bc *conf.Data, logger log.Logger) {
 	var err error
 	asynqServer.Pg, err = ent.Open("postgres", bc.Database.Source)
 	if err != nil {
-		log.NewHelper(logger).Fatalf("failed opening connection to postgres: %v", err)
+		log.Fatalf("failed opening connection to postgres: %v", err)
 		panic(err)
 	}
 }
 
-func initAsyncInspector(bc *conf.Data_Redis, logger log.Logger) {
-	asyncInspector = asynq.NewInspector(asynq.RedisClientOpt{Addr: bc.Addr, Username: bc.User, Password: bc.Password})
+func initAsyncInspector(bc *conf.Data_Redis) {
+	asyncInspector = AsynqInspector{}
+	asyncInspector.AsynqInspector = asynq.NewInspector(asynq.RedisClientOpt{Addr: bc.Addr, Username: bc.User, Password: bc.Password})
 }
 
-func GetAsynqClient() *asynq.Client {
+func GetAsynqClient() AsynqClient {
 	return asynqClient
 }
 
@@ -72,6 +96,6 @@ func GetAsynqServer() AsynqServer {
 	return asynqServer
 }
 
-func GetAsyncInspector() *asynq.Inspector {
+func GetAsyncInspector() AsynqInspector {
 	return asyncInspector
 }

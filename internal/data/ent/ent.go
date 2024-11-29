@@ -5,6 +5,7 @@ package ent
 import (
 	"blug/internal/data/ent/article"
 	"blug/internal/data/ent/friend"
+	"blug/internal/data/ent/task"
 	"blug/internal/data/ent/user"
 	"context"
 	"errors"
@@ -77,6 +78,7 @@ func checkColumn(table, column string) error {
 		columnCheck = sql.NewColumnCheck(map[string]func(string) bool{
 			article.Table: article.ValidColumn,
 			friend.Table:  friend.ValidColumn,
+			task.Table:    task.ValidColumn,
 			user.Table:    user.ValidColumn,
 		})
 	})

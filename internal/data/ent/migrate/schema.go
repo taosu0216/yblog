@@ -16,7 +16,7 @@ var (
 		{Name: "category", Type: field.TypeString},
 		{Name: "tags", Type: field.TypeString},
 		{Name: "url", Type: field.TypeString},
-		{Name: "create_time", Type: field.TypeString, Default: "2024-11-27 11:55:19"},
+		{Name: "create_time", Type: field.TypeString, Default: "2024-11-29 16:34:20"},
 		{Name: "is_show", Type: field.TypeBool, Default: true},
 		{Name: "content", Type: field.TypeString, Size: 2147483647, Default: ""},
 	}
@@ -41,6 +41,23 @@ var (
 		Columns:    FriendsColumns,
 		PrimaryKey: []*schema.Column{FriendsColumns[0]},
 	}
+	// TasksColumns holds the columns for the "tasks" table.
+	TasksColumns = []*schema.Column{
+		{Name: "id", Type: field.TypeInt, Increment: true},
+		{Name: "task_id", Type: field.TypeString, Default: ""},
+		{Name: "task_name", Type: field.TypeString, Default: ""},
+		{Name: "task_type", Type: field.TypeString, Default: ""},
+		{Name: "status", Type: field.TypeString, Default: ""},
+		{Name: "reason", Type: field.TypeString, Default: ""},
+		{Name: "create_time", Type: field.TypeString, Default: "2024-11-29 16:34:20"},
+		{Name: "finish_time", Type: field.TypeString, Default: ""},
+	}
+	// TasksTable holds the schema information for the "tasks" table.
+	TasksTable = &schema.Table{
+		Name:       "tasks",
+		Columns:    TasksColumns,
+		PrimaryKey: []*schema.Column{TasksColumns[0]},
+	}
 	// UsersColumns holds the columns for the "users" table.
 	UsersColumns = []*schema.Column{
 		{Name: "id", Type: field.TypeUUID, Unique: true},
@@ -59,6 +76,7 @@ var (
 	Tables = []*schema.Table{
 		ArticlesTable,
 		FriendsTable,
+		TasksTable,
 		UsersTable,
 	}
 )

@@ -3,10 +3,13 @@ package main
 import (
 	"blug/daemonSet"
 	"blug/internal/conf"
+	"blug/internal/pkg"
 	"blug/internal/pkg/aiService"
 	"blug/internal/pkg/async"
 	"blug/internal/pkg/auth"
+	"blug/internal/pkg/loggers"
 	"blug/internal/pkg/markdown"
+	"context"
 	"flag"
 	"go.opentelemetry.io/otel"
 	"go.opentelemetry.io/otel/attribute"
@@ -59,7 +62,8 @@ func newApp(logger log.Logger, gs *grpc.Server, hs *http.Server) *kratos.App {
 
 func main() {
 	flag.Parse()
-	logger := initLog()
+	currentDir := pkg.GetRootLocation()
+	logger := loggers.InitLog(currentDir)
 	c := config.New(
 		config.WithSource(
 			file.NewSource(flagconf),
@@ -89,8 +93,9 @@ func main() {
 	}
 	defer cleanup()
 
-	async.InitAsynq(bc.Data, logger)
-	go daemonSet.InitDaemonSet()
+	async.InitAsynq(bc.Data)
+	ctx := context.Background()
+	go daemonSet.InitDaemonSet(ctx)
 
 	// start and wait for stop signal
 	if err = app.Run(); err != nil {
